@@ -18,27 +18,10 @@
 # DCC Config Server - Configuration
 #
 
+---
+
 ###############################################################################
-# Profile - common
+# Profile - "production"
 ###############################################################################
 
-# Repositories
-spring.cloud.config.server.git:
-  basedir: target/config
-  uri: null
-  repos:
-    dcc-portal:
-      pattern: dcc-portal
-      uri: file://${user.home}/Config/dcc-portal
-    dcc-id:
-      pattern: dcc-id
-      uri: file://${user.home}/Config/dcc-id
-    dcc-meta:
-      pattern: dcc-meta
-      uri: file://${user.home}/Config/dcc-meta
-
-# Authentication
-security:
-  user:
-    name: admin
-    password: secret
+spring.profiles: production
