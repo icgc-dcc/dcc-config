@@ -21,16 +21,27 @@ import static org.springframework.boot.SpringApplication.run;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.config.server.EnableConfigServer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
+
+import lombok.val;
 
 /**
  * Application entry point.
  */
 @EnableConfigServer
 @SpringBootApplication
-public class ServerMain {
+public class ServerMain extends GlobalAuthenticationConfigurerAdapter {
 
   public static void main(String... args) {
     run(ServerMain.class, args);
+  }
+
+  @Override
+  public void init(AuthenticationManagerBuilder auth) throws Exception {
+    val authorizedUsers = auth.inMemoryAuthentication();
+    authorizedUsers.withUser("user1").password("password").authorities("ROLE_USER");
+    authorizedUsers.withUser("user2").password("password").authorities("ROLE_USER");
   }
 
 }
