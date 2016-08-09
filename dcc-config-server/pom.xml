@@ -33,8 +33,15 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-starter-parent</artifactId>
+        <artifactId>spring-cloud-dependencies</artifactId>
         <version>${spring-cloud.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -76,7 +83,6 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring-maven-plugin.version}</version>
         <configuration>
           <fork>true</fork>
         </configuration>
@@ -110,11 +116,14 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF S
   </build>
 
   <properties>
-    <!-- Spring -->
-    <spring-cloud.version>1.0.2.RELEASE</spring-cloud.version>
-
-    <!-- Plugins  -->
-    <spring-maven-plugin.version>1.4.0.BUILD-SNAPSHOT</spring-maven-plugin.version>
+    <!-- Spring Cloud -->
+    <spring-cloud.version>Brixton.SR4</spring-cloud.version>
+    <!-- Spring Boot -->
+    <spring-boot.version>1.4.0.RELEASE</spring-boot.version>
+    <!-- Spring Boot - Jackson -->
+    <jackson.version>2.7.5</jackson.version>    
+    <!-- Spring Boot - Logging -->
+    <logback.version>1.1.7</logback.version>
   </properties>
 
 </project>

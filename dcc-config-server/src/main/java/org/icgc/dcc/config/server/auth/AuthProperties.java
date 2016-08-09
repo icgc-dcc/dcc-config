@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.config.config;
+package org.icgc.dcc.config.server.auth;
 
 import static com.google.common.collect.Lists.newArrayList;
 
@@ -27,6 +27,9 @@ import org.springframework.stereotype.Component;
 import lombok.Data;
 import lombok.ToString;
 
+/**
+ * Authorization and authentication properties.
+ */
 @Data
 @Component
 @ConfigurationProperties(prefix = "auth")

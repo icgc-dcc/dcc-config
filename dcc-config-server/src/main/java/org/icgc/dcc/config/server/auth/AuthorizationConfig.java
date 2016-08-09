@@ -15,7 +15,8 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.config.config;
+// @formatter:off
+package org.icgc.dcc.config.server.auth;
 
 import static java.util.stream.Collectors.joining;
 
@@ -32,20 +33,25 @@ import lombok.SneakyThrows;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Authorization configuration.
+ * 
+ * @see https://github.com/spring-cloud/spring-cloud-config/issues/464
+ */
 @Slf4j
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   AuthProperties properties;
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    // Allow home page
+    // Allow home page for all
     http
         .authorizeRequests()
-        .antMatchers("/").permitAll();
+          .antMatchers("/").permitAll();
 
     // From most restrictive match to least
     for (val name : properties.getNames())
@@ -56,11 +62,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     for (val profile : properties.getProfiles())
       authorizeConfigRequest(http, "*", profile);
 
+    // Require basic authentication
     http
         .authorizeRequests()
-        .anyRequest().authenticated()
+          .anyRequest().authenticated()
         .and()
-        .httpBasic();
+          .httpBasic();
   }
 
   @SneakyThrows
@@ -68,32 +75,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     boolean exact = !name.equals("*") && !profile.equals("*");
 
     // From org.springframework.cloud.config.server.EnvironmentController
-    String[] patterns = { "/" + name + "/" + profile + "/*", //
-        "/" + name + "-" + profile + ".properties", //
-        "/" + name + "-" + profile + ".json", //
-        "/" + name + "-" + profile + ".yaml", //
-        "/" + name + "-" + profile + ".yml", //
-        "/*/" + name + "-" + profile + ".properties", //
-        "/*/" + name + "-" + profile + ".json", //
-        "/*/" + name + "-" + profile + ".yaml", //
+    String[] patterns = { // 
+        "/" + name + "/" + profile + "/*/*",
+        
+        "/" + name + "/" + profile + "/*",
+        "/" + name + "-" + profile + ".properties",
+        "/" + name + "-" + profile + ".json",
+        "/" + name + "-" + profile + ".yaml",
+        "/" + name + "-" + profile + ".yml",
+        
+        "/*/" + name + "-" + profile + ".properties",
+        "/*/" + name + "-" + profile + ".json",
+        "/*/" + name + "-" + profile + ".yaml",
         "/*/" + name + "-" + profile + ".yml"
     };
+
     val access = any(
-        hasAuthorities("name:*", "profile:*"),
-        exact ? hasAuthorities("name:" + name, "profile:*") : null,
-        exact ? hasAuthorities("name:*", "profile:" + profile) : null,
-        hasAuthorities("name:" + name, "profile:" + profile));
+                hasAuthorities("name:*",       "profile:*"),
+        exact ? hasAuthorities("name:" + name, "profile:*")          : null,
+        exact ? hasAuthorities("name:*",       "profile:" + profile) : null,
+                hasAuthorities("name:" + name, "profile:" + profile));
 
     log.info("Authorizing '{}' with: {}", patterns, access);
     http.authorizeRequests().antMatchers(patterns).access(access);
   }
 
   private static String any(String... expressions) {
-    return Stream.of(expressions).filter(e -> e != null).map(e -> "(" + e + ")").collect(joining(" || "));
+    return Stream.of(expressions)
+        .filter(e -> e != null)
+        .map(e -> "(" + e + ")")
+        .collect(joining(" || "));
   }
 
   private static String hasAuthorities(String... authorities) {
-    return Stream.of(authorities).map(a -> "hasAuthority('" + a + "')").collect(joining(" && "));
+    return Stream.of(authorities)
+        .map(a -> "hasAuthority('" + a + "')")
+        .collect(joining(" && "));
   }
 
 }

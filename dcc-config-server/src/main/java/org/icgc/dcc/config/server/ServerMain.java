@@ -15,33 +15,22 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.config;
+package org.icgc.dcc.config.server;
 
 import static org.springframework.boot.SpringApplication.run;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.config.server.EnableConfigServer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.authentication.configurers.GlobalAuthenticationConfigurerAdapter;
-
-import lombok.val;
 
 /**
  * Application entry point.
  */
 @EnableConfigServer
 @SpringBootApplication
-public class ServerMain extends GlobalAuthenticationConfigurerAdapter {
+public class ServerMain {
 
   public static void main(String... args) {
     run(ServerMain.class, args);
-  }
-
-  @Override
-  public void init(AuthenticationManagerBuilder auth) throws Exception {
-    val authorizedUsers = auth.inMemoryAuthentication();
-    authorizedUsers.withUser("user1").password("password").authorities("ROLE_USER");
-    authorizedUsers.withUser("user2").password("password").authorities("ROLE_USER");
   }
 
 }

@@ -15,7 +15,7 @@
  * IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN                         
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.icgc.dcc.config.config;
+package org.icgc.dcc.config.server.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -27,18 +27,23 @@ import org.springframework.security.config.annotation.authentication.configurers
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Authentication configuration.
+ * 
+ * @see https://github.com/spring-cloud/spring-cloud-config/issues/464
+ */
 @Slf4j
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class GlobalSecurityConfig extends GlobalAuthenticationConfigurerAdapter {
+public class AuthenticationConfig extends GlobalAuthenticationConfigurerAdapter {
 
   @Autowired
   AuthProperties properties;
 
   @Override
   public void init(AuthenticationManagerBuilder auth) throws Exception {
-    for (val user : properties.users) {
-      log.info("Creating user: {}", user);
+    for (val user : properties.getUsers()) {
+      log.info("Adding user: {}...", user);
       auth.inMemoryAuthentication()
           .withUser(user.getUsername())
           .password(user.getPassword())
