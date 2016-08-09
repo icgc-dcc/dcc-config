@@ -41,8 +41,16 @@ spring.cloud.config.server.git:
       pattern: dcc-meta
       uri: file://${user.home}/Config/dcc-meta
 
-# Authentication
-security:
-  user:
-    name: admin
-    password: secret
+# A/A
+auth:
+  names:
+    - dcc-portal
+  profiles:
+    - development
+    - production    
+  users:
+    - {username: 'user1', password: 'password', authorities: ['name:*',          'profile:*']}
+    - {username: 'user2', password: 'password', authorities: ['name:*',          'profile:production']}
+    - {username: 'user3', password: 'password', authorities: ['name:dcc-portal', 'profile:*']}
+    - {username: 'user4', password: 'password', authorities: ['name:dcc-portal', 'profile:development']}
+    - {username: 'user5', password: 'password', authorities: []}
