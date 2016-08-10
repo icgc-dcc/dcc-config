@@ -54,11 +54,11 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
           .antMatchers("/").permitAll();
 
     // From most restrictive match to least
-    for (val name : properties.getNames())
+    for (val application : properties.getApplications())
       for (val profile : properties.getProfiles())
-        authorizeConfigRequest(http, name, profile);
-    for (val name : properties.getNames())
-      authorizeConfigRequest(http, name, "*");
+        authorizeConfigRequest(http, application, profile);
+    for (val application : properties.getApplications())
+      authorizeConfigRequest(http, application, "*");
     for (val profile : properties.getProfiles())
       authorizeConfigRequest(http, "*", profile);
 
@@ -71,30 +71,30 @@ public class AuthorizationConfig extends WebSecurityConfigurerAdapter {
   }
 
   @SneakyThrows
-  private static void authorizeConfigRequest(HttpSecurity http, String name, String profile) {
-    boolean exact = !name.equals("*") && !profile.equals("*");
+  private static void authorizeConfigRequest(HttpSecurity http, String application, String profile) {
+    boolean exact = !application.equals("*") && !profile.equals("*");
 
     // From org.springframework.cloud.config.server.EnvironmentController
     String[] patterns = { // 
-        "/" + name + "/" + profile + "/*/*",
+        "/" + application + "/" + profile + "/*/*",
         
-        "/" + name + "/" + profile + "/*",
-        "/" + name + "-" + profile + ".properties",
-        "/" + name + "-" + profile + ".json",
-        "/" + name + "-" + profile + ".yaml",
-        "/" + name + "-" + profile + ".yml",
+        "/" + application + "/" + profile + "/*",
+        "/" + application + "-" + profile + ".properties",
+        "/" + application + "-" + profile + ".json",
+        "/" + application + "-" + profile + ".yaml",
+        "/" + application + "-" + profile + ".yml",
         
-        "/*/" + name + "-" + profile + ".properties",
-        "/*/" + name + "-" + profile + ".json",
-        "/*/" + name + "-" + profile + ".yaml",
-        "/*/" + name + "-" + profile + ".yml"
+        "/*/" + application + "-" + profile + ".properties",
+        "/*/" + application + "-" + profile + ".json",
+        "/*/" + application + "-" + profile + ".yaml",
+        "/*/" + application + "-" + profile + ".yml"
     };
 
     val access = any(
-                hasAuthorities("name:*",       "profile:*"),
-        exact ? hasAuthorities("name:" + name, "profile:*")          : null,
-        exact ? hasAuthorities("name:*",       "profile:" + profile) : null,
-                hasAuthorities("name:" + name, "profile:" + profile));
+                hasAuthorities("application:*",              "profile:*"),
+        exact ? hasAuthorities("application:" + application, "profile:*")          : null,
+        exact ? hasAuthorities("application:*",              "profile:" + profile) : null,
+                hasAuthorities("application:" + application, "profile:" + profile));
 
     log.info("Authorizing '{}' with: {}", patterns, access);
     http.authorizeRequests().antMatchers(patterns).access(access);

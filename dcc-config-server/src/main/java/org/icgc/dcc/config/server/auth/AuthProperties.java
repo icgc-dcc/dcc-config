@@ -35,16 +35,41 @@ import lombok.ToString;
 @ConfigurationProperties(prefix = "auth")
 public class AuthProperties {
 
-  List<String> names = newArrayList();
+  /**
+   * The explicit list of applications supported by this server.
+   */
+  List<String> applications = newArrayList();
+
+  /**
+   * The explicit list of applications supported by this server.
+   */
   List<String> profiles = newArrayList();
+
+  /**
+   * The authorized users.
+   */
   List<User> users = newArrayList();
 
   @Data
   @ToString(exclude = "password")
   public static class User {
 
+    /**
+     * The username used authenticate with the server
+     */
     String username;
+
+    /**
+     * The password used authenticate with the server
+     */
     String password;
+
+    /**
+     * The set of authorities given to this user as defined by the system.
+     * <p>
+     * e.g. {@literal application:*}, {@literal profile:*}, any {@literal application:<application>} in
+     * {@link AuthProperties#applications} or {@literal profile:<profile>} in {@link AuthProperties#profiles}
+     */
     String[] authorities = new String[] {};
 
   }

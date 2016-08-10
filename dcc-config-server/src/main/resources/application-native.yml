@@ -20,8 +20,4 @@
 # See http://cloud.spring.io/spring-cloud-static/spring-cloud.html#_file_system_backend
 #
 
-###############################################################################
-# Profile - "native"
-###############################################################################
-
 spring.cloud.config.server.native.searchLocations: 'file:///tmp/dcc-config/data/{application}'
